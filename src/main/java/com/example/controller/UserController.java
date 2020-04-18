@@ -1,14 +1,18 @@
 package com.example.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.model.User;
 import com.example.serveice.inser.UserService;
+import com.example.util.JSONUtil;
+import com.example.util.Msg;
+import com.example.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,19 +23,23 @@ public class UserController {
     UserService userService;
 
     @RequestMapping(value = "/getalluser")
-    public List<User> getAllUser(){
-        return userService.getAllUser();
+    public Msg getAllUser(){
+        return ResultUtil.success(userService.getAllUser());
     }
 
     @RequestMapping(value = "/getuserone",method = RequestMethod.GET)
-    public User getUserByAcount(String acount){
+    public Msg getUserByAcount(String acount){
         User user = userService.getUserInfoByAcount(acount);
-        return user;
+        return ResultUtil.success(user);
     }
 
     @RequestMapping(value = "/getuserinfobycondition")
-    public List<User> getUserInfoByCondition(@RequestParam Map<String,Object> params){
-        return userService.getUserInfoByCondition(params);
+    public Msg getUserInfoByCondition(@RequestParam Map<String,Object> params){
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = JSONUtil.toJSONArray(userService.getUserInfoByCondition(params));
+        jsonObject.put("pageIndex",1);
+        jsonObject.put("list",jsonArray);
+        return ResultUtil.success(jsonObject);
     }
 
 //    @RequestMapping(value = "/insertuser")
@@ -41,8 +49,8 @@ public class UserController {
 //    }
 
     @RequestMapping(value = "/insertuser")
-    public int insertUser(@RequestParam Map<String,Object> params){
+    public Msg insertUser(@RequestParam Map<String,Object> params){
         int i = userService.insertStudent(params);
-        return i;
+        return ResultUtil.success("ok");
     }
 }

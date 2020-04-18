@@ -30,7 +30,7 @@ public class ResultUtil {
      * @param object
      * @return
      */
-    public static Msg success2(Integer code, String resultInfo, Object object){
+    public static Msg success(Integer code, String resultInfo, Object object){
         Msg msg = new Msg();
         msg.setCode(code);
         msg.setMsg(resultInfo);
