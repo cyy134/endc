@@ -37,20 +37,20 @@ public class UserController {
     public Msg getUserInfoByCondition(@RequestParam Map<String,Object> params){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONUtil.toJSONArray(userService.getUserInfoByCondition(params));
-        jsonObject.put("pageIndex",1);
+        jsonObject.put("pageIndex",params.get("pageIndex"));
+        jsonObject.put("pageSize",params.get("pageSize"));
+        jsonObject.put("pageCount","11");//
+        jsonObject.put("totalCount","20");//
         jsonObject.put("list",jsonArray);
         return ResultUtil.success(jsonObject);
     }
 
-//    @RequestMapping(value = "/insertuser")
-//    public int insertUser(String acount,String nickName,String emil){
-//        int i = userService.insertStudent(acount,nickName,emil);
-//        return i;
-//    }
-
     @RequestMapping(value = "/insertuser")
     public Msg insertUser(@RequestParam Map<String,Object> params){
         int i = userService.insertStudent(params);
-        return ResultUtil.success("ok");
+        if(i>0){
+            return ResultUtil.success("ok");
+        }
+        return ResultUtil.error(100,"新增失败");
     }
 }
