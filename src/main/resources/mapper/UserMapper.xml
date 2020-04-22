@@ -14,6 +14,34 @@
         where acount=#{acount}
     </select>
 
+    <!-- 多条件模糊查询的totalCount -->
+    <select id="getUserInfoCount" resultType="int">
+        select count(*)
+        from user
+        where 1=1
+        <if test="params.acount != null and params.acount.trim() != ''">
+            and acount like concat(concat('%',#{params.acount}),'%')
+        </if>
+        <if test="params.nickName !=null and params.nickName.trim() !='' ">
+            and nickName like concat(concat('%',#{params.nickName}),'%')
+        </if>
+        <if test="params.age !=null and params.age.trim() !='' ">
+            and age like concat(concat('%',#{params.age}),'%')
+        </if>
+        <if test="params.emil !=null and params.emil.trim() !='' ">
+            and emil like concat(concat('%',#{params.emil}),'%')
+        </if>
+        <if test="params.createtime !=null and params.createtime.trim() !='' ">
+            and createtime like concat(concat('%',#{params.createtime}),'%')
+        </if>
+        <if test="params.ssex !=null and params.ssex.trim() !='' ">
+            and ssex like concat(concat('%',#{params.ssex}),'%')
+        </if>
+        <if test="params.phone !=null and params.phone.trim() !='' ">
+            and phone like concat(concat('%',#{params.phone}),'%')
+        </if>
+    </select>
+
     <!-- 多条件模糊查询带分页 -->
     <select id="getUserInfoByCondition"  resultType="java.util.Map">
         select *
@@ -22,6 +50,25 @@
         <if test="params.acount != null and params.acount.trim() != ''">
             and acount like concat(concat('%',#{params.acount}),'%')
         </if>
+        <if test="params.nickName !=null and params.nickName.trim() !=''">
+            and nickName like concat(concat('%',#{params.nickName}),'%')
+        </if>
+        <if test="params.age !=null and params.age.trim() !='' ">
+            and age like concat(concat('%',#{params.age}),'%')
+        </if>
+        <if test="params.emil !=null and params.emil.trim() !='' ">
+            and emil like concat(concat('%',#{params.emil}),'%')
+        </if>
+        <if test="params.createtime !=null and params.createtime.trim() !=''">
+            and createtime like concat(concat('%',#{params.createtime}),'%')
+        </if>
+        <if test="params.ssex !=null and params.ssex.trim() !='' ">
+            and ssex like concat(concat('%',#{params.ssex}),'%')
+        </if>
+        <if test="params.phone !=null and params.phone.trim() !='' ">
+            and phone like concat(concat('%',#{params.phone}),'%')
+        </if>
+          limit #{params.start},#{params.pageSize}
 
     </select>
 
@@ -30,5 +77,12 @@
         values (#{params.acount},#{params.nickName},#{params.emil},#{params.age},#{params.createtime},
         #{params.isheadpacticre},#{params.ssex},#{params.phone},#{params.extendjson},#{params.passworld})
     </insert>
+
+    <delete id="deleteStudent">
+        delete from user where code in
+        <foreach collection="list" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </delete>
 
 </mapper>

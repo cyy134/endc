@@ -8,9 +8,10 @@ import java.util.List;
 @Data
 public class PageList<T> implements Serializable {
 
+    private int totalCount;
     private int pageSize;
     private int pageIndex;
     private int pageCount;
-    private int totalCount;
+
     private List<T> list;
 }

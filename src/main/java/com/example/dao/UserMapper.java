@@ -1,5 +1,6 @@
 package com.example.dao;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,8 +13,10 @@ import java.util.Map;
 @Mapper
 public interface UserMapper {
     User getUserInfoByAcount(String acount);
-//    int insertStudent(@Param("acount") String acount, @Param("nickName") String nickName, @Param("emil") String emil);
     int insertStudent(@Param("params") Map<String,Object> params);
     List<User> getAllUser();
-    List<User> getUserInfoByCondition(@Param("params") Map<String,Object> params);
+    List<User> getUserInfoByCondition(@Param("params") JSONObject params);
+    int getUserInfoCount(@Param("params") JSONObject params);
+
+    int deleteStudent(@Param("list") List<String> list);
 }
