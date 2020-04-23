@@ -4,8 +4,8 @@
 
     <insert id="addUser" parameterType="java.util.Map">
         insert into user(acount,nickName,emil,age,createtime,isheadpacticre,ssex,phone,extendjson,passworld)
-        values (#{params.acount},#{params.nickName},#{params.emil},#{params.age},#{params.createtime},
-        #{params.isheadpacticre},#{params.ssex},#{params.phone},#{params.extendjson},#{params.passworld})
+        values (#{acount},#{nickName},#{emil},#{age},#{createtime},
+        #{isheadpacticre},#{ssex},#{phone},#{extendjson},#{passworld})
     </insert>
 
 </mapper>
