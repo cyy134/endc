@@ -1,11 +1,14 @@
 package com.example.serveice.imp;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.dao.FileMapper;
 import com.example.dao.UserMapper;
 import com.example.model.User;
 import com.example.serveice.inser.FileService;
+import com.example.util.ExcelUtil;
 import com.example.util.Msg;
 import com.example.util.ResultUtil;
+import javafx.scene.effect.Bloom;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
 
 //上传excel表数据到数据库（没有验证）
 @Service
@@ -75,6 +81,7 @@ public class FielServiceImp implements FileService {
         //获取输入流
         InputStream inputStream = file.getInputStream();
         Workbook wb = null;
+        //获取工作铺
         if(isExcel2003){
             wb = new HSSFWorkbook(inputStream);
         }else
@@ -147,4 +154,38 @@ public class FielServiceImp implements FileService {
         }
             return ResultUtil.error(100,"sheet为空");
     }
+
+
+    @Override
+    public void exportExcel(HttpServletResponse response) {
+        try {
+            List<User> userList = userMapper.getAllUser();
+            List<List<String>> lists = new ArrayList<>();
+            List<String> listhead = new ArrayList<>();
+            listhead.add("账号");
+            listhead.add("昵称");
+            listhead.add("年龄");
+            listhead.add("创建时间");
+            listhead.add("电话");
+            listhead.add("邮箱");
+            listhead.add("性别");
+            lists.add(listhead);
+            for (User item : userList) {
+                List<String> listString = new ArrayList<>();
+                listString.add(item.getAcount());
+                listString.add(item.getNickName());
+                listString.add(item.getAge());
+                listString.add(item.getCreatetime());
+                listString.add(item.getPhone());
+                listString.add(item.getEmil());
+                listString.add(item.getSsex());
+                lists.add(listString);
+            }
+            ExcelUtil.exportExcel(response, lists, "用户表", "user.xls", 10);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 }

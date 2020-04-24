@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/cyy/file")
 public class FileController {
@@ -39,6 +41,16 @@ public class FileController {
             e.printStackTrace();
         }
         return result;
+    }
+
+    //excel形式导出列表
+    @RequestMapping(value = "/exportExcel")
+    public void exportExcel(HttpServletResponse response){
+        try {
+            fileService.exportExcel(response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
