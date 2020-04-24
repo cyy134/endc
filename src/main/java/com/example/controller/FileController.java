@@ -27,4 +27,16 @@ public class FileController {
             return ResultUtil.error(100,"错误");
     }
 
+    @RequestMapping(value = "/fileImportIsExcel",method = RequestMethod.POST)
+    public Msg fileImport(MultipartFile file){
+        Msg result=null;
+        String fileName = file.getOriginalFilename();
+        try {
+            result = fileService.getExcelOrder(fileName,file);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
