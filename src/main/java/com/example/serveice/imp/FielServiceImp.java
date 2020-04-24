@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-//上传excel表数据到数据库（没有验证次方法）
+//上传excel表数据到数据库（没有验证）
 @Service
 public class FielServiceImp implements FileService {
 

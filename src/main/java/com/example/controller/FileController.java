@@ -17,7 +17,7 @@ public class FileController {
     @Autowired
     FileService fileService;
 
-    //导入excel模板是吸纳批量新增（简洁版）
+    //导入excel模板实现批量新增（简洁版）
     @RequestMapping(value = "/excel",method = RequestMethod.POST)
     public Msg upload(MultipartFile file, Model model) throws Exception {
 
