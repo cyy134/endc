@@ -1,6 +1,5 @@
 package com.example.serveice.imp;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.dao.FileMapper;
 import com.example.dao.UserMapper;
 import com.example.model.User;
@@ -8,7 +7,6 @@ import com.example.serveice.inser.FileService;
 import com.example.util.ExcelUtil;
 import com.example.util.Msg;
 import com.example.util.ResultUtil;
-import javafx.scene.effect.Bloom;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,11 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.MarshalledObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
 
 //上传excel表数据到数据库（没有验证）
 @Service
@@ -67,27 +64,23 @@ public class FielServiceImp implements FileService {
         return true;
     }
 
+    public Boolean check(Row row, String acount,int j){
+        boolean flag = true;
+        row.getCell(j).setCellType(CellType.STRING);
+        acount = row.getCell(j).getStringCellValue();
+        if (acount == null || acount.equals("")) {
+            flag = false;
+        }
+        return flag;
+    }
     @Override
     public Msg getExcelOrder(String fileName, MultipartFile file) throws Exception {
         //正则表达式判断文件格式
         if(!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")){
             return ResultUtil.error( 100,"上传文件格式不正确");
         }
-        //判断版本
-        boolean isExcel2003 = true;
-        if(fileName.matches("^.+\\.(?i)(xlsx)$")) {
-            isExcel2003 = false;
-        }
-        //获取输入流
-        InputStream inputStream = file.getInputStream();
-        Workbook wb = null;
-        //获取工作铺
-        if(isExcel2003){
-            wb = new HSSFWorkbook(inputStream);
-        }else
-            wb = new XSSFWorkbook(inputStream);
-        //获取第一个sheet页
-        Sheet sheet = wb.getSheetAt(0);
+
+        Sheet sheet = ExcelUtil.importExcel(fileName,file,0);
         if(sheet !=null) {
             User user;
             //从第二行数据开始，第一行是标题
@@ -98,6 +91,7 @@ public class FielServiceImp implements FileService {
                     continue;
                 }
                 user = new User();
+
                 //进行单元格校验
                 row.getCell(0).setCellType(CellType.STRING);
                 String acount = row.getCell(0).getStringCellValue();
@@ -156,6 +150,7 @@ public class FielServiceImp implements FileService {
     }
 
 
+    //以excel表方式导出
     @Override
     public void exportExcel(HttpServletResponse response) {
         try {
