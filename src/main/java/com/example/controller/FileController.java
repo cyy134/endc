@@ -17,6 +17,7 @@ public class FileController {
     @Autowired
     FileService fileService;
 
+    //导入excel模板是吸纳批量新增（简洁版）
     @RequestMapping(value = "/excel",method = RequestMethod.POST)
     public Msg upload(MultipartFile file, Model model) throws Exception {
 
@@ -27,6 +28,7 @@ public class FileController {
             return ResultUtil.error(100,"错误");
     }
 
+    //导入excel模板实现批量新增（完善版）
     @RequestMapping(value = "/fileImportIsExcel",method = RequestMethod.POST)
     public Msg fileImport(MultipartFile file){
         Msg result=null;

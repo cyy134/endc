@@ -1,6 +1,7 @@
 package com.example.serveice.imp;
 
 import com.example.dao.FileMapper;
+import com.example.dao.UserMapper;
 import com.example.model.User;
 import com.example.serveice.inser.FileService;
 import com.example.util.Msg;
@@ -22,6 +23,9 @@ public class FielServiceImp implements FileService {
 
     @Autowired
     FileMapper fileMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public boolean getExcel(MultipartFile file) throws Exception {
@@ -59,15 +63,16 @@ public class FielServiceImp implements FileService {
 
     @Override
     public Msg getExcelOrder(String fileName, MultipartFile file) throws Exception {
-        boolean notNull = false;
-        List<User> userList = new ArrayList<>();
+        //正则表达式判断文件格式
         if(!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")){
             return ResultUtil.error( 100,"上传文件格式不正确");
         }
+        //判断版本
         boolean isExcel2003 = true;
         if(fileName.matches("^.+\\.(?i)(xlsx)$")) {
             isExcel2003 = false;
         }
+        //获取输入流
         InputStream inputStream = file.getInputStream();
         Workbook wb = null;
         if(isExcel2003){
@@ -78,12 +83,15 @@ public class FielServiceImp implements FileService {
         Sheet sheet = wb.getSheetAt(0);
         if(sheet !=null) {
             User user;
+            //从第二行数据开始，第一行是标题
             for (int r = 1; r <= sheet.getLastRowNum(); r++) {
                 Row row = sheet.getRow(r);
+                //此行为null跳出本次循环
                 if (row == null) {
                     continue;
                 }
                 user = new User();
+                //进行单元格校验
                 row.getCell(0).setCellType(CellType.STRING);
                 String acount = row.getCell(0).getStringCellValue();
                 if (acount == null || acount.equals("")) {
@@ -98,25 +106,25 @@ public class FielServiceImp implements FileService {
 
                 row.getCell(2).setCellType(CellType.STRING);
                 String age = row.getCell(2).getStringCellValue();
-                if (age == null || age == "") {
+                if (age == null || age.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的年龄是否未填写");
                 }
 
                 row.getCell(3).setCellType(CellType.STRING);
                 String emil = row.getCell(3).getStringCellValue();
-                if (emil == null || emil == "") {
+                if (emil == null || emil.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的邮箱是否未填写");
                 }
 
                 row.getCell(4).setCellType(CellType.STRING);
                 String ssex = row.getCell(4).getStringCellValue();
-                if (ssex == null || ssex == "") {
+                if (ssex == null || ssex.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的性别是否未填写");
                 }
 
                 row.getCell(5).setCellType(CellType.STRING);
                 String phone = row.getCell(5).getStringCellValue();
-                if (phone == null || phone == "") {
+                if (phone == null || phone.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的电话是否未填写");
                 }
 
@@ -126,6 +134,12 @@ public class FielServiceImp implements FileService {
                 user.setPhone(phone);
                 user.setEmil(emil);
                 user.setAge(age);
+                //判断新添加的账号是否已经存在。
+                User exisUser = userMapper.getUserInfoByAcount(acount);
+                if(exisUser.getAcount().equals(acount)){
+                    return ResultUtil.error(100,"导入失败，第\"+r+1+\"行的账号已经存在，" +
+                            "不可重复添加，若要覆盖请先删除重复用户");
+                }
                 fileMapper.addUser(user);
                 System.out.print("插入用户成功");
             }
