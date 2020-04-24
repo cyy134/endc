@@ -7,16 +7,11 @@ import com.example.serveice.inser.FileService;
 import com.example.util.ExcelUtil;
 import com.example.util.Msg;
 import com.example.util.ResultUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.rmi.MarshalledObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +68,7 @@ public class FielServiceImp implements FileService {
         }
         return flag;
     }
+
     @Override
     public Msg getExcelOrder(String fileName, MultipartFile file) throws Exception {
         //正则表达式判断文件格式
