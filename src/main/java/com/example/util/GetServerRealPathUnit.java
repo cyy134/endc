@@ -5,6 +5,9 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+/**
+ * 获取linux系统文件夹
+ */
 public class GetServerRealPathUnit {
 
     public static String  getPath(String subdirectory){
