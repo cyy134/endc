@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-//重写WebMvcConfigurer的addCorsMappings方法 实现 跨域资源共享（CORS）（这是一中全局跨域配置)
+//重写WebMvcConfigurer的addCorsMappings方法 实现 跨域资源共享（CORS）（这是一全局跨域配置)
 @Configuration
 public class GlobalCorsConfig {
     @Bean

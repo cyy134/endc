@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface FileMapper {
 
-    int addUser(@Param("user") User user);
+    int addUser(User user);
 }

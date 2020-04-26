@@ -21,7 +21,7 @@ public class FileController {
 
     //导入excel模板实现批量新增（简洁版）
     @RequestMapping(value = "/excel",method = RequestMethod.POST)
-    public Msg upload(MultipartFile file, Model model) throws Exception {
+    public Msg upload(MultipartFile file) throws Exception {
 
         boolean flag = fileService.getExcel(file);
         if(flag){
@@ -43,7 +43,10 @@ public class FileController {
         return result;
     }
 
-    //excel形式导出列表
+    /**
+     * excel表导出列表
+     * @param response
+     */
     @RequestMapping(value = "/exportExcel")
     public void exportExcel(HttpServletResponse response){
         try {

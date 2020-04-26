@@ -76,6 +76,7 @@ public class FielServiceImp implements FileService {
             return ResultUtil.error( 100,"上传文件格式不正确");
         }
 
+        String emil="";
         Sheet sheet = ExcelUtil.importExcel(fileName,file,0);
         if(sheet !=null) {
             User user;
@@ -107,20 +108,23 @@ public class FielServiceImp implements FileService {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的年龄是否未填写");
                 }
 
-                row.getCell(3).setCellType(CellType.STRING);
-                String emil = row.getCell(3).getStringCellValue();
-                if (emil == null || emil.equals("")) {
-                    return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的邮箱是否未填写");
+
+                if(row.getCell(4)!=null) {
+                    row.getCell(4).setCellType(CellType.STRING);
+                    emil = row.getCell(4).getStringCellValue();
+                    if (emil == null || emil.equals("")) {
+                        return ResultUtil.error(100, "导入失败，请检查第\"+r+1+\"行的邮箱是否未填写");
+                    }
                 }
 
-                row.getCell(4).setCellType(CellType.STRING);
-                String ssex = row.getCell(4).getStringCellValue();
+                row.getCell(5).setCellType(CellType.STRING);
+                String ssex = row.getCell(5).getStringCellValue();
                 if (ssex == null || ssex.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的性别是否未填写");
                 }
 
-                row.getCell(5).setCellType(CellType.STRING);
-                String phone = row.getCell(5).getStringCellValue();
+                row.getCell(3).setCellType(CellType.STRING);
+                String phone = row.getCell(3).getStringCellValue();
                 if (phone == null || phone.equals("")) {
                     return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的电话是否未填写");
                 }
@@ -132,11 +136,11 @@ public class FielServiceImp implements FileService {
                 user.setEmil(emil);
                 user.setAge(age);
                 //判断新添加的账号是否已经存在。
-                User exisUser = userMapper.getUserInfoByAcount(acount);
-                if(exisUser.getAcount().equals(acount)){
-                    return ResultUtil.error(100,"导入失败，第\"+r+1+\"行的账号已经存在，" +
-                            "不可重复添加，若要覆盖请先删除重复用户");
-                }
+//                User exisUser = userMapper.getUserInfoByAcount(acount);
+//                if(exisUser.getAcount().equals(acount)){
+//                    return ResultUtil.error(100,"导入失败，第\"+r+1+\"行的账号已经存在，" +
+//                            "不可重复添加，若要覆盖请先删除重复用户");
+//                }
                 fileMapper.addUser(user);
                 System.out.print("插入用户成功");
             }
