@@ -26,6 +26,15 @@ public class FielServiceImp implements FileService {
     UserMapper userMapper;
 
     @Override
+    public void download(HttpServletResponse response){
+        try {
+            ExcelUtil.download(response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public boolean getExcel(MultipartFile file) throws Exception {
         List<User> userList = new ArrayList<>();
         //得到上传的表
@@ -69,6 +78,13 @@ public class FielServiceImp implements FileService {
         return flag;
     }
 
+    /**
+     * 导入excel
+     * @param fileName
+     * @param file
+     * @return
+     * @throws Exception
+     */
     @Override
     public Msg getExcelOrder(String fileName, MultipartFile file) throws Exception {
         //正则表达式判断文件格式

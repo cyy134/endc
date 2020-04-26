@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.serveice.inser.FileService;
 import com.example.util.Msg;
 import com.example.util.ResultUtil;
-import com.sun.tools.internal.ws.processor.model.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +17,20 @@ public class FileController {
 
     @Autowired
     FileService fileService;
+
+    /**
+     * 下载模板
+     * @param response
+     */
+    @RequestMapping(value = "/download")
+    public void download(HttpServletResponse response){
+        try {
+            fileService.download(response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     //导入excel模板实现批量新增（简洁版）
     @RequestMapping(value = "/excel",method = RequestMethod.POST)

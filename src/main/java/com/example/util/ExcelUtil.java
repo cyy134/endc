@@ -20,7 +20,7 @@ public class ExcelUtil {
     public static void download(HttpServletResponse response){
         String pathFile ="D:\\WUYU";
         //要上传的文件名字
-        String fileName="user.xsl";
+        String fileName="user.xls";
         //通过文件的保存文件夹路径加上文件的名字来获得文件
         File file=new File(pathFile,fileName);
         //当文件存在

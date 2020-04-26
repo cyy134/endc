@@ -11,4 +11,5 @@ public interface FileService {
     boolean getExcel(MultipartFile file) throws Exception;
     Msg getExcelOrder(String fileName, MultipartFile file) throws Exception;
     void exportExcel(HttpServletResponse response) throws IOException;
+    void download(HttpServletResponse response);
 }
