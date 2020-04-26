@@ -8,4 +8,20 @@
         #{isheadpacticre},#{ssex},#{phone},#{extendjson},#{passworld})
     </insert>
 
+    <!--<insert id="addUser" parameterType="java.util.List">-->
+        <!--insert into user(acount,nickName,emil,age,createtime,isheadpacticre,ssex,phone,extendjson,passworld)-->
+        <!--values-->
+        <!--<foreach collection="list" item="user" index="index" separator=",">-->
+            <!--#{acount},#{nickName},#{user.emil},#{user.age},#{user.createtime},-->
+            <!--#{user.isheadpacticre},#{user.ssex},#{user.phone},#{user.extendjson},#{user.passworld}-->
+        <!--</foreach>-->
+    <!--</insert>-->
+
+    <delete id="deleteStudent">
+        delete from user where code in
+        <foreach collection="list" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </delete>
+
 </mapper>

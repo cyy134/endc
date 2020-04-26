@@ -36,7 +36,6 @@ public class FielServiceImp implements FileService {
 
     @Override
     public boolean getExcel(MultipartFile file) throws Exception {
-        List<User> userList = new ArrayList<>();
         //得到上传的表
         Workbook workbook2 = WorkbookFactory.create(file.getInputStream());
         //获取表面为test的工作表
@@ -63,7 +62,7 @@ public class FielServiceImp implements FileService {
             user.setPhone(valus[5]);
             user.setSsex(valus[6]);
 
-            fileMapper.addUser(user);
+//            fileMapper.addUser(user);
         }
         return true;
     }
@@ -87,12 +86,18 @@ public class FielServiceImp implements FileService {
      */
     @Override
     public Msg getExcelOrder(String fileName, MultipartFile file) throws Exception {
+        List<User> userList = new ArrayList<>();
         //正则表达式判断文件格式
         if(!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")){
             return ResultUtil.error( 100,"上传文件格式不正确");
         }
 
+        String acount="";
         String emil="";
+        String nickName="";
+        String age="";
+        String ssex="";
+        String phone="";
         Sheet sheet = ExcelUtil.importExcel(fileName,file,0);
         if(sheet !=null) {
             User user;
@@ -106,22 +111,28 @@ public class FielServiceImp implements FileService {
                 user = new User();
 
                 //进行单元格校验
-                row.getCell(0).setCellType(CellType.STRING);
-                String acount = row.getCell(0).getStringCellValue();
-                if (acount == null || acount.equals("")) {
-                    return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的账号是否未填写");
+                if(row.getCell(0) != null) {
+                    row.getCell(0).setCellType(CellType.STRING);
+                    acount = row.getCell(0).getStringCellValue();
+                    if (acount == null || acount.equals("")) {
+                        return ResultUtil.error(100, "导入失败，请检查第\"+r+1+\"行的账号是否未填写");
+                    }
                 }
 
-                row.getCell(1).setCellType(CellType.STRING);
-                String nickName = row.getCell(1).getStringCellValue();
-                if (nickName == null || nickName.equals("")) {
-                    return ResultUtil.error(100,"\"导入失败，请检查第\\\"+r+1+\\\"行的昵称是否未填写\"");
+                if(row.getCell(1) != null) {
+                    row.getCell(1).setCellType(CellType.STRING);
+                    nickName = row.getCell(1).getStringCellValue();
+                    if (nickName == null || nickName.equals("")) {
+                        return ResultUtil.error(100, "\"导入失败，请检查第\\\"+r+1+\\\"行的昵称是否未填写\"");
+                    }
                 }
 
-                row.getCell(2).setCellType(CellType.STRING);
-                String age = row.getCell(2).getStringCellValue();
-                if (age == null || age.equals("")) {
-                    return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的年龄是否未填写");
+                if(row.getCell(2) != null) {
+                    row.getCell(2).setCellType(CellType.STRING);
+                    age = row.getCell(2).getStringCellValue();
+                    if (age == null || age.equals("")) {
+                        return ResultUtil.error(100, "导入失败，请检查第\"+r+1+\"行的年龄是否未填写");
+                    }
                 }
 
 
@@ -133,16 +144,20 @@ public class FielServiceImp implements FileService {
                     }
                 }
 
-                row.getCell(5).setCellType(CellType.STRING);
-                String ssex = row.getCell(5).getStringCellValue();
-                if (ssex == null || ssex.equals("")) {
-                    return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的性别是否未填写");
+                if(row.getCell(5) != null) {
+                    row.getCell(5).setCellType(CellType.STRING);
+                    ssex = row.getCell(5).getStringCellValue();
+                    if (ssex == null || ssex.equals("")) {
+                        return ResultUtil.error(100, "导入失败，请检查第\"+r+1+\"行的性别是否未填写");
+                    }
                 }
 
-                row.getCell(3).setCellType(CellType.STRING);
-                String phone = row.getCell(3).getStringCellValue();
-                if (phone == null || phone.equals("")) {
-                    return ResultUtil.error(100,"导入失败，请检查第\"+r+1+\"行的电话是否未填写");
+                if(row.getCell(3) != null) {
+                    row.getCell(3).setCellType(CellType.STRING);
+                    phone = row.getCell(3).getStringCellValue();
+                    if (phone == null || phone.equals("")) {
+                        return ResultUtil.error(100, "导入失败，请检查第\"+r+1+\"行的电话是否未填写");
+                    }
                 }
 
                 user.setAcount(acount);
@@ -151,6 +166,7 @@ public class FielServiceImp implements FileService {
                 user.setPhone(phone);
                 user.setEmil(emil);
                 user.setAge(age);
+                userList.add(user);
                 //判断新添加的账号是否已经存在。
 //                User exisUser = userMapper.getUserInfoByAcount(acount);
 //                if(exisUser.getAcount().equals(acount)){
@@ -160,6 +176,7 @@ public class FielServiceImp implements FileService {
                 fileMapper.addUser(user);
                 System.out.print("插入用户成功");
             }
+//            fileMapper.addUser(userList);
             return ResultUtil.success("导入用户成功");
         }
             return ResultUtil.error(100,"sheet为空");
