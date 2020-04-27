@@ -32,7 +32,12 @@ public class FileController {
 
     }
 
-    //导入excel模板实现批量新增（简洁版）
+    /**
+     * 导入excel模板实现批量新增（简洁版）
+     * @param file
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/excel",method = RequestMethod.POST)
     public Msg upload(MultipartFile file) throws Exception {
 
@@ -43,7 +48,11 @@ public class FileController {
             return ResultUtil.error(100,"错误");
     }
 
-    //导入excel模板实现批量新增（完善版）
+    /**
+     * 导入excel模板实现批量新增（完善版）
+     * @param file
+     * @return
+     */
     @RequestMapping(value = "/fileImportIsExcel",method = RequestMethod.POST)
     public Msg fileImport(MultipartFile file){
         Msg result=null;

@@ -25,6 +25,10 @@ public class FielServiceImp implements FileService {
     @Autowired
     UserMapper userMapper;
 
+    /**
+     * 下载模板文件
+     * @param response
+     */
     @Override
     public void download(HttpServletResponse response){
         try {
@@ -34,6 +38,12 @@ public class FielServiceImp implements FileService {
         }
     }
 
+    /**
+     * 导入excel(简易版)
+     * @param file
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean getExcel(MultipartFile file) throws Exception {
         //得到上传的表
@@ -67,18 +77,8 @@ public class FielServiceImp implements FileService {
         return true;
     }
 
-    public Boolean check(Row row, String acount,int j){
-        boolean flag = true;
-        row.getCell(j).setCellType(CellType.STRING);
-        acount = row.getCell(j).getStringCellValue();
-        if (acount == null || acount.equals("")) {
-            flag = false;
-        }
-        return flag;
-    }
-
     /**
-     * 导入excel
+     * 导入excel(完善版)
      * @param fileName
      * @param file
      * @return
@@ -168,11 +168,11 @@ public class FielServiceImp implements FileService {
                 user.setAge(age);
                 userList.add(user);
                 //判断新添加的账号是否已经存在。
-//                User exisUser = userMapper.getUserInfoByAcount(acount);
-//                if(exisUser.getAcount().equals(acount)){
-//                    return ResultUtil.error(100,"导入失败，第\"+r+1+\"行的账号已经存在，" +
-//                            "不可重复添加，若要覆盖请先删除重复用户");
-//                }
+                User exisUser = userMapper.getUserInfoByAcount(acount);
+                if(exisUser.getAcount().equals(acount)){
+                    return ResultUtil.error(100,"导入失败，第\"+r+1+\"行的账号已经存在，" +
+                            "不可重复添加，若要覆盖请先删除重复用户");
+                }
                 fileMapper.addUser(user);
                 System.out.print("插入用户成功");
             }
@@ -183,7 +183,10 @@ public class FielServiceImp implements FileService {
     }
 
 
-    //以excel表方式导出
+    /**
+     * 以excel表方式导出
+     * @param response
+     */
     @Override
     public void exportExcel(HttpServletResponse response) {
         try {
