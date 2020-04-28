@@ -95,6 +95,14 @@ public class UserController {
             return ResultUtil.success("ok");
         }
         return ResultUtil.error(100,"失败");
+    }
 
+    @RequestMapping("/changeUserInfo")
+    public Msg changeUserInfo(User user){
+        int i = userService.changeUserInfo(user);
+        if(i>0){
+            return ResultUtil.success("ok");
+        }
+        return ResultUtil.error(100,"失败");
     }
 }

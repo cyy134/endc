@@ -19,4 +19,7 @@ public interface UserMapper {
     int getUserInfoCount(@Param("params") JSONObject params);
 
     int deleteStudent(@Param("list") List<String> list);
+
+    int changeUserInfo(User user);
+    User getUserInfoByCode(int code);
 }

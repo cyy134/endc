@@ -16,4 +16,5 @@ public interface UserService {
     List<User> getAllUser();
     PageList<User> getUserInfoByCondition(JSONObject params);
     int deleteStudent(List<String> list);
+    int changeUserInfo(User user);
 }

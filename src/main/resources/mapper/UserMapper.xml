@@ -85,4 +85,16 @@
         </foreach>
     </delete>
 
+    <update id="changeUserInfo" parameterType="User">
+        update user
+        set age=#{age},emil=#{emil},phone=#{phone},nickName=#{nickName},ssex=#{ssex}
+        where acount=#{acount}
+    </update>
+
+    <select id="getUserInfoByCode" parameterType="int" resultType="User">
+        select *
+        from user
+        where code=#{code}
+    </select>
+
 </mapper>
