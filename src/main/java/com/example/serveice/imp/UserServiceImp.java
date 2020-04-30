@@ -2,15 +2,19 @@ package com.example.serveice.imp;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.Config.RedisConfigTwo;
 import com.example.dao.UserMapper;
 import com.example.model.User;
 import com.example.serveice.inser.UserService;
+import com.example.util.JSONUtil;
 import com.example.util.PageList;
 import org.apache.ibatis.annotations.Param;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +28,13 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     UserMapper userMapper;
+
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<Object,Object> redisTemplate;
+
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
 
     /**
      * 根据acount获取用户信息，并且将其存入redis缓存中
@@ -34,32 +43,39 @@ public class UserServiceImp implements UserService {
      */
     @Override
     public User getUserInfoByAcount(String acount) {
+        User user = new User();
         String key = "user_"+acount;
-        ValueOperations<String,User> operations = redisTemplate.opsForValue();
+        ValueOperations<Object,Object> operations = redisTemplate.opsForValue();
         Boolean hadKey = redisTemplate.hasKey(key);
         if(hadKey){
-            User user = operations.get(key);
+            //将operations.get(key)得到的LinkedHashMap转化为json字符串
+            String userJSON = JSONObject.toJSONString(operations.get(key));
+            //将userJSON转化为User对象
+            user = JSONObject.parseObject(userJSON,User.class);
             System.out.print("。。。。从缓存中获取数据。。。。。");
             System.out.print(user.getAcount());
             System.out.print("。。。。。。。。。。。。。。。。。");
-            return user;
-        }else {
-            User user = userMapper.getUserInfoByAcount(acount);
-            System.out.print("。。。。从数据库中获取数据。。。。。");
-            System.out.print(user.getAcount());
-            System.out.print("。。。。。。。。。。。。。。。。。");
 
-            /**
-             * 设置 key 的值为 value
-             * 其它规则与 set(K key, V value)一样
-             * @param key 不能为空
-             * @param value 设置的值
-             * @param timeout 设置过期的时间
-             * @param unit 时间单位。不能为空
-             */
-            operations.set(key,user,5, TimeUnit.HOURS);
-            return user;
+        }else {
+            user = userMapper.getUserInfoByAcount(acount);
+            System.out.print("。。。。从数据库中获取数据。。。。。");
+            if(user !=null) {
+                System.out.print(user.getAcount());
+                System.out.print("。。。。。。。。。。。。。。。。。");
+
+                /**
+                 * 设置 key 的值为 value
+                 * 其它规则与 set(K key, V value)一样
+                 * @param key 不能为空
+                 * @param value 设置的值
+                 * @param timeout 设置过期的时间
+                 * @param unit 时间单位。不能为空
+                 */
+                operations.set(key, user, 5, TimeUnit.HOURS);
+            }
+
         }
+        return user;
     }
 
     @Override
@@ -138,7 +154,7 @@ public class UserServiceImp implements UserService {
     @Override
     public int changeUserInfo(User user) {
         int i = userMapper.changeUserInfo(user);
-        ValueOperations<String,User> operations = redisTemplate.opsForValue();
+        ValueOperations<Object,Object> operations = redisTemplate.opsForValue();
         if(i>0){
             String key = "user_"+user.getAcount();
             boolean haskey = redisTemplate.hasKey(key);
