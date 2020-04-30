@@ -63,14 +63,7 @@ public class UserServiceImp implements UserService {
                 System.out.print(user.getAcount());
                 System.out.print("。。。。。。。。。。。。。。。。。");
 
-                /**
-                 * 设置 key 的值为 value
-                 * 其它规则与 set(K key, V value)一样
-                 * @param key 不能为空
-                 * @param value 设置的值
-                 * @param timeout 设置过期的时间
-                 * @param unit 时间单位。不能为空
-                 */
+                //key不能为空 value设置的值 timeout设置过期的时间 unit时间单位,不能为空
                 operations.set(key, user, 5, TimeUnit.HOURS);
             }
 
