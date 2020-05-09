@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,28 @@ public class FielServiceImp implements FileService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Override
+    public String uploadOne(MultipartFile file){
+        String flag="false";
+        try {
+            flag = ExcelUtil.uploadOne(file);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean uploadFiles(HttpServletRequest request) {
+        Boolean flag = false;
+        try {
+            flag = ExcelUtil.uploadFiles(request);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
 
     /**
      * 下载模板文件

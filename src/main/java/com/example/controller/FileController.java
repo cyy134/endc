@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -17,6 +18,25 @@ public class FileController {
 
     @Autowired
     FileService fileService;
+
+    @RequestMapping(value = "/uploadfiles",method = RequestMethod.POST)
+    public Msg uploadFiles(HttpServletRequest request){
+        boolean flag = fileService.uploadFiles(request);
+        if (flag){
+            return ResultUtil.success(flag);
+        }else
+            return ResultUtil.error(400,"false");
+    }
+
+    @RequestMapping(value = "/uploadone")
+    public Msg uploadOne(MultipartFile file){
+        try {
+            return ResultUtil.success(fileService.uploadOne(file));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.error(400,"系统异常");
+        }
+    }
 
     /**
      * 下载模板
